@@ -1,6 +1,6 @@
 {
   "name": "hive",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Portail des résidents d'une copropriété (Astro, self-hosted).",
   "private": true,
   "type": "module",
