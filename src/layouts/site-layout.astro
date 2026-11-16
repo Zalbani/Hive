@@ -1,0 +1,26 @@
+---
+import type { Residence } from '../domain/residence'
+import { format, getTranslation, Locales } from '../i18n/t'
+import type { NavSection } from '../utils/routes'
+import SiteHeader from '../components/site-header.astro'
+import SiteFooter from '../components/site-footer.astro'
+import BaseLayout from './base-layout.astro'
+
+interface Props {
+  pageTitle: string
+  residence: Residence
+  currentSection: NavSection | null
+}
+
+const { pageTitle, residence, currentSection } = Astro.props
+const translation = getTranslation(Locales.FR)
+const title = `${pageTitle} — ${format(translation.meta.titleSuffix, { name: residence.name })}`
+---
+
+<BaseLayout title={title} description={translation.meta.description}>
+  <SiteHeader residence={residence} currentSection={currentSection} translation={translation} />
+  <main id="main-content" class="h-page">
+    <slot />
+  </main>
+  <SiteFooter residence={residence} translation={translation} />
+</BaseLayout>

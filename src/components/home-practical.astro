@@ -1,0 +1,77 @@
+---
+import type { PracticalFact } from '../domain/faq'
+import { Tones } from '../domain/tone'
+import type { Translation } from '../i18n/t'
+import { Routes } from '../utils/routes'
+import SectionHeading from './section-heading.astro'
+
+interface Props {
+  facts: PracticalFact[]
+  translation: Translation
+}
+
+const { facts, translation } = Astro.props
+---
+
+<section class="home-practical">
+  <SectionHeading
+    title={translation.home.faqTitle}
+    tone={Tones.ROSE}
+    linkHref={Routes.FAQ}
+    linkLabel={translation.home.faqLink}
+  />
+  <dl class="h-list-card home-practical__list">
+    {facts.map((fact) => (
+      <div class="home-practical__row">
+        <dt class="home-practical__label">{fact.label}</dt>
+        <dd class="home-practical__value">
+          <span class="home-practical__main">{fact.value}</span>
+          <span class="home-practical__detail">{fact.detail}</span>
+        </dd>
+      </div>
+    ))}
+  </dl>
+</section>
+
+<style>
+  .home-practical {
+    flex: 999 1 540px;
+    min-width: 0;
+  }
+
+  .home-practical__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-1) var(--space-4);
+    padding: var(--space-3-5) 0;
+  }
+
+  .home-practical__row + .home-practical__row {
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .home-practical__label {
+    width: 170px;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    color: var(--rose-fg);
+  }
+
+  .home-practical__value {
+    flex: 1 1 260px;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .home-practical__main {
+    display: block;
+    font-size: var(--text-base);
+    font-weight: var(--weight-bold);
+  }
+
+  .home-practical__detail {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+</style>

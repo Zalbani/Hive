@@ -1,0 +1,31 @@
+---
+import DocumentEssentials from '../components/document-essentials.astro'
+import DocumentList from '../components/document-list.astro'
+import PageHero from '../components/page-hero.astro'
+import { getDocuments } from '../data/documents'
+import { getResidence } from '../data/residence'
+import { getTranslation, Locales } from '../i18n/t'
+import SiteLayout from '../layouts/site-layout.astro'
+import { NavSections } from '../utils/routes'
+
+const translation = getTranslation(Locales.FR)
+const t = translation.documents
+const [residence, documents] = await Promise.all([getResidence(), getDocuments()])
+const essentials = documents.filter((document) => document.essential)
+---
+
+<SiteLayout pageTitle={t.metaTitle} residence={residence} currentSection={NavSections.DOCUMENTS}>
+  <div class="documents" data-filter-root>
+    <PageHero background={NavSections.DOCUMENTS} title={t.title} lead={null} />
+    <DocumentEssentials documents={essentials} translation={translation} />
+    <DocumentList documents={documents} translation={translation} />
+  </div>
+</SiteLayout>
+
+<style>
+  .documents {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-7);
+  }
+</style>

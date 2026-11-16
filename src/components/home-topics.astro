@@ -1,0 +1,78 @@
+---
+import { TOPIC_STAGE_ORDER, type Topic } from '../domain/topic'
+import { Tones } from '../domain/tone'
+import { format, type Translation } from '../i18n/t'
+import { getTopicHref } from '../data/topics'
+import { Routes } from '../utils/routes'
+import SectionHeading from './section-heading.astro'
+import ToneCard from './tone-card.astro'
+
+interface Props {
+  topics: Topic[]
+  totalCount: number
+  translation: Translation
+}
+
+const { topics, totalCount, translation } = Astro.props
+const t = translation.home
+const stepCount = TOPIC_STAGE_ORDER.length
+const toCurrentStep = (topic: Topic): number => TOPIC_STAGE_ORDER.indexOf(topic.stage) + 1
+---
+
+<section>
+  <SectionHeading
+    title={t.topicsTitle}
+    tone={Tones.PEACH}
+    linkHref={Routes.TOPICS}
+    linkLabel={format(t.topicsLink, { count: totalCount })}
+  />
+  <ul class="h-card-grid home-topics">
+    {topics.map((topic) => (
+      <li>
+        <ToneCard
+          href={getTopicHref(topic.id)}
+          tone={Tones.PEACH}
+          badge={translation.topics.badges[topic.stage]}
+          title={topic.shortTitle}
+          opensInNewTab={false}
+          ariaLabel={null}
+        >
+          <span class="home-topics__summary">{topic.summary}</span>
+          <span class="visually-hidden">
+            {format(t.progressLabel, { current: toCurrentStep(topic), total: stepCount })}
+          </span>
+          <ol
+            class="h-segments home-topics__steps"
+            style={`--segment-count:${String(stepCount)}`}
+            aria-hidden="true"
+          >
+            {TOPIC_STAGE_ORDER.map((_, index) => (
+              <li
+                class:list={[
+                  'h-segments__item',
+                  { 'h-segments__item--done': index < toCurrentStep(topic) },
+                ]}
+              />
+            ))}
+          </ol>
+        </ToneCard>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .home-topics {
+    --segment-empty: var(--color-track-on-tone);
+  }
+
+  .home-topics__summary {
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    color: var(--color-ink-soft);
+  }
+
+  .home-topics__steps {
+    margin-top: auto;
+  }
+</style>

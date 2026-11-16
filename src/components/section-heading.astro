@@ -1,0 +1,44 @@
+---
+import type { Tone } from '../domain/tone'
+
+interface Props {
+  title: string
+  tone: Tone
+  linkHref: string
+  linkLabel: string
+}
+
+const { title, tone, linkHref, linkLabel } = Astro.props
+---
+
+<div class="section-heading">
+  <h2 class="section-heading__title" data-tone={tone}>
+    {title}
+  </h2>
+  <a href={linkHref} class="h-text-link section-heading__link">
+    {linkLabel}
+  </a>
+</div>
+
+<style>
+  .section-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3-5);
+  }
+
+  .section-heading__title {
+    padding-bottom: var(--space-1-5);
+    border-bottom: 3px solid var(--tone-accent);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-snug);
+  }
+
+  .section-heading__link {
+    font-size: var(--text-md);
+  }
+</style>

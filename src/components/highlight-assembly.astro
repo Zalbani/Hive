@@ -1,0 +1,105 @@
+---
+import type { Assembly } from '../domain/assembly'
+import { Tones } from '../domain/tone'
+import { format, formatPlural, type Translation } from '../i18n/t'
+import { getDocumentHref } from '../data/documents'
+import {
+  dateTimeToParisIsoDate,
+  daysBetween,
+  formatDayMonth,
+  formatLongDate,
+  formatTime,
+  formatWeekdayDayMonth,
+} from '../utils/dates'
+import HighlightFrame from './highlight-frame.astro'
+
+interface Props {
+  assembly: Assembly
+  today: string
+  translation: Translation
+}
+
+const { assembly, today, translation } = Astro.props
+const t = translation.highlight.assembly
+const assemblyDate = dateTimeToParisIsoDate(assembly.heldAt)
+const daysLeft = daysBetween(today, assemblyDate)
+const countdown = daysLeft === 0 ? t.today : formatPlural(t.days, daysLeft)
+const title = format(t.title[assembly.kind], { date: formatWeekdayDayMonth(assemblyDate) })
+const dateTime = format(t.dateTime, {
+  date: formatLongDate(assemblyDate),
+  time: formatTime(assembly.heldAt),
+})
+---
+
+<HighlightFrame
+  background="home"
+  kicker={t.kicker}
+  kickerTone={Tones.INK}
+  title={title}
+  lead={format(t.lead, { date: formatDayMonth(assembly.convocationSentOn) })}
+>
+  <Fragment slot="actions">
+    <a
+      href={getDocumentHref(assembly.agendaDocumentId)}
+      target="_blank"
+      rel="noopener"
+      class="h-btn h-btn--large h-btn--primary"
+    >
+      {t.agenda}
+      <span class="visually-hidden">{translation.external.newTab}</span>
+    </a>
+    <a
+      href={getDocumentHref(assembly.proxyDocumentId)}
+      target="_blank"
+      rel="noopener"
+      class="h-btn h-btn--large h-btn--glass"
+    >
+      {t.proxy}
+      <span class="visually-hidden">{translation.external.newTab}</span>
+    </a>
+  </Fragment>
+  <div slot="aside" class="h-float-card assembly__countdown">
+    {daysLeft > 0 && <p class="h-float-card__label">{t.countdownLabel}</p>}
+    <p class="assembly__days h-numeric">{countdown}</p>
+    <ul class="assembly__facts">
+      <li data-tone={Tones.PEACH}>{dateTime}</li>
+      <li data-tone={Tones.SAGE}>{assembly.location}</li>
+    </ul>
+  </div>
+</HighlightFrame>
+
+<style>
+  .assembly__countdown {
+    flex: 1 1 220px;
+    max-width: 280px;
+    padding: var(--space-6-5);
+    text-align: center;
+  }
+
+  .assembly__days {
+    margin-top: var(--space-1);
+    font-size: clamp(44px, 5vw, var(--text-display));
+    font-weight: var(--weight-extrabold);
+    white-space: nowrap;
+    letter-spacing: var(--tracking-display);
+    line-height: 1;
+  }
+
+  .assembly__facts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    margin: var(--space-4-5) 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+  }
+
+  .assembly__facts li {
+    padding: 7px;
+    border-radius: var(--radius-sm);
+    background: var(--tone-bg);
+    color: var(--tone-fg);
+  }
+</style>

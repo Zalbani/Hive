@@ -1,0 +1,62 @@
+---
+import type { Tone } from '../domain/tone'
+
+interface Props {
+  href: string
+  tone: Tone
+  badge: string
+  title: string
+  opensInNewTab: boolean
+  ariaLabel: string | null
+}
+
+const { href, tone, badge, title, opensInNewTab, ariaLabel } = Astro.props
+---
+
+<a
+  href={href}
+  class="tone-card h-lift"
+  data-tone={tone}
+  target={opensInNewTab ? '_blank' : undefined}
+  rel={opensInNewTab ? 'noopener' : undefined}
+  aria-label={ariaLabel ?? undefined}
+>
+  <span class="tone-card__glow" aria-hidden="true"></span>
+  <span class="h-badge h-badge--on-tone">{badge}</span>
+  <span class="tone-card__title">{title}</span>
+  <slot />
+</a>
+
+<style>
+  .tone-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    height: 100%;
+    min-height: 160px;
+    padding: var(--space-5-5);
+    border-radius: var(--radius-3xl);
+    background: var(--tone-bg);
+  }
+
+  .tone-card__glow {
+    position: absolute;
+    z-index: -1;
+    width: 140px;
+    height: 140px;
+    right: -40px;
+    top: -50px;
+    border-radius: 50%;
+    background: var(--color-glow);
+  }
+
+  .tone-card__title {
+    font-size: var(--text-card-title);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-snug);
+    line-height: var(--leading-snug);
+  }
+</style>

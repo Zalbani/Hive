@@ -1,0 +1,69 @@
+---
+import type { Residence } from '../domain/residence'
+import { TOPIC_STAGE_ORDER } from '../domain/topic'
+import { format, type Translation } from '../i18n/t'
+import { toMailtoHref } from '../utils/routes'
+
+interface Props {
+  residence: Residence
+  translation: Translation
+}
+
+const { residence, translation } = Astro.props
+const t = translation.topics
+const reportHref = toMailtoHref(
+  residence.councilEmail,
+  format(t.reportSubject, { name: residence.name }),
+)
+---
+
+<aside class="topics-aside">
+  <section id="signaler" class="h-panel" aria-labelledby="report-title">
+    <h2 id="report-title" class="h-panel__title">
+      {t.reportTitle}
+    </h2>
+    <p class="h-panel__text">{t.reportText}</p>
+    <a href={reportHref} class="h-btn h-btn--primary h-btn--block">
+      {t.reportCta}
+    </a>
+  </section>
+  <section class="h-panel topics-aside__steps" aria-labelledby="steps-title">
+    <h2 id="steps-title" class="h-panel__title">
+      {t.stepsTitle}
+    </h2>
+    <ol class="topics-aside__list">
+      {TOPIC_STAGE_ORDER.map((stage) => (
+        <li>
+          <strong>{t.steps[stage]}</strong> — {t.stepsHelp[stage]}
+        </li>
+      ))}
+    </ol>
+  </section>
+</aside>
+
+<style>
+  .topics-aside {
+    flex: 1 1 260px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  #signaler {
+    scroll-margin-top: var(--space-6);
+  }
+
+  .topics-aside__steps {
+    background: var(--lilac-bg);
+  }
+
+  .topics-aside__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    padding-left: var(--space-4-5);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+</style>

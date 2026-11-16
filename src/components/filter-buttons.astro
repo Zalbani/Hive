@@ -1,0 +1,45 @@
+---
+import type { Tone } from '../domain/tone'
+
+export interface FilterOption {
+  value: string
+  label: string
+  tone: Tone
+}
+
+interface Props {
+  label: string
+  allLabel: string
+  options: FilterOption[]
+  dotColor: 'dot' | 'accent'
+}
+
+const { label, allLabel, options, dotColor } = Astro.props
+---
+
+<div class="h-filters" role="group" aria-label={label} data-filter-controls hidden>
+  <button type="button" class="h-filter" data-filter-value="all" aria-pressed="true">
+    {allLabel}
+  </button>
+  {options.map((option) => (
+    <button
+      type="button"
+      class="h-filter"
+      data-filter-value={option.value}
+      data-tone={option.tone}
+      aria-pressed="false"
+    >
+      <span
+        class:list={['h-dot', { 'filter-buttons__dot--accent': dotColor === 'accent' }]}
+        aria-hidden="true"
+      />
+      {option.label}
+    </button>
+  ))}
+</div>
+
+<style>
+  .filter-buttons__dot--accent {
+    background: var(--tone-accent);
+  }
+</style>

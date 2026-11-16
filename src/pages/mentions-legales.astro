@@ -1,0 +1,8 @@
+---
+import { getTranslation, Locales } from '../i18n/t'
+import TextPage from '../layouts/text-page.astro'
+
+const t = getTranslation(Locales.FR).legal
+---
+
+<TextPage pageTitle={t.title} paragraphs={t.body} />

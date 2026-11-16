@@ -1,0 +1,40 @@
+---
+import { HighlightKinds, type Highlight } from '../domain/highlight'
+import type { Residence } from '../domain/residence'
+import type { Translation } from '../i18n/t'
+import HighlightAction from './highlight-action.astro'
+import HighlightAssembly from './highlight-assembly.astro'
+import HighlightSummary from './highlight-summary.astro'
+import HighlightWorks from './highlight-works.astro'
+
+interface Props {
+  highlight: Highlight
+  residence: Residence
+  today: string
+  translation: Translation
+}
+
+const { highlight, residence, today, translation } = Astro.props
+---
+
+{highlight.kind === HighlightKinds.ASSEMBLY && (
+  <HighlightAssembly assembly={highlight.assembly} today={today} translation={translation} />
+)}
+{highlight.kind === HighlightKinds.WORKS && (
+  <HighlightWorks
+    topic={highlight.topic}
+    schedule={highlight.schedule}
+    today={today}
+    translation={translation}
+  />
+)}
+{highlight.kind === HighlightKinds.ACTION && (
+  <HighlightAction
+    consultation={highlight.consultation}
+    residence={residence}
+    translation={translation}
+  />
+)}
+{highlight.kind === HighlightKinds.SUMMARY && (
+  <HighlightSummary highlight={highlight} residence={residence} translation={translation} />
+)}

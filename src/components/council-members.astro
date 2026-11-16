@@ -1,0 +1,85 @@
+---
+import type { CouncilMember } from '../domain/contact'
+import { COUNCIL_AVATAR_TONES } from '../domain/presentation'
+import { Tones } from '../domain/tone'
+import { format, type Translation } from '../i18n/t'
+import { toMailtoHref } from '../utils/routes'
+
+interface Props {
+  members: CouncilMember[]
+  translation: Translation
+}
+
+const { members, translation } = Astro.props
+const t = translation.contacts
+const toneAt = (index: number): string =>
+  COUNCIL_AVATAR_TONES[index % COUNCIL_AVATAR_TONES.length] ?? Tones.LILAC
+---
+
+<section aria-labelledby="council-title">
+  <h2 id="council-title" class="h-subheading">
+    {t.councilTitle}
+  </h2>
+  <ul class="h-card-grid">
+    {members.map((member, index) => (
+      <li class="council__card">
+        <div class="council__identity">
+          <span class="h-tile h-tile--round" data-tone={toneAt(index)} aria-hidden="true">
+            {member.initials}
+          </span>
+          <div class="council__names">
+            <h3 class="council__name">{member.displayName}</h3>
+            <p class="council__role">
+              {format(t.memberMeta, { role: t.roles[member.role], building: member.building })}
+            </p>
+          </div>
+        </div>
+        <p class="council__follows">{format(t.follows, { topics: member.follows.join(', ') })}</p>
+        <a href={toMailtoHref(member.email, null)} class="h-text-link council__write">
+          {format(t.writeTo, { name: member.displayName })}
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .council__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2-5);
+    padding: var(--space-5);
+    border-radius: var(--radius-2xl);
+    background: var(--color-surface);
+  }
+
+  .council__identity {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .council__names {
+    line-height: 1.3;
+  }
+
+  .council__name {
+    font-size: var(--text-base);
+    font-weight: var(--weight-extrabold);
+  }
+
+  .council__role {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .council__follows {
+    font-size: var(--text-sm);
+    color: var(--color-ink-soft);
+  }
+
+  .council__write {
+    align-self: flex-start;
+    font-size: var(--text-sm);
+  }
+</style>

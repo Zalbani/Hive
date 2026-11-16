@@ -1,0 +1,130 @@
+---
+import type { Residence } from '../domain/residence'
+import { Tones, type Tone } from '../domain/tone'
+import type { Translation } from '../i18n/t'
+import { IconNames, type IconName } from '../utils/icons'
+import { Routes } from '../utils/routes'
+import ExternalLinkHint from './external-link-hint.astro'
+import Icon from './icon.astro'
+
+interface Props {
+  residence: Residence
+  translation: Translation
+}
+
+const { residence, translation } = Astro.props
+const t = translation.home.quickActions
+const ICON_SIZE = 22
+
+interface QuickAction {
+  href: string
+  title: string
+  text: string
+  tone: Tone
+  icon: IconName
+  isExternal: boolean
+}
+
+const actions: QuickAction[] = [
+  {
+    href: residence.links.sharedSpacesBooking,
+    title: t.sharedSpacesTitle,
+    text: t.sharedSpacesText,
+    tone: Tones.ROSE,
+    icon: IconNames.CALENDAR,
+    isExternal: true,
+  },
+  {
+    href: `${Routes.TOPICS}#signaler`,
+    title: t.reportTitle,
+    text: t.reportText,
+    tone: Tones.PEACH,
+    icon: IconNames.ALERT,
+    isExternal: false,
+  },
+  {
+    href: residence.links.residentsGroup,
+    title: t.groupTitle,
+    text: t.groupText,
+    tone: Tones.SAGE,
+    icon: IconNames.CHAT,
+    isExternal: true,
+  },
+]
+---
+
+<nav aria-label={translation.home.quickActionsLabel}>
+  <ul class="h-card-grid quick-actions">
+    {actions.map((action) => (
+      <li>
+        <a
+          href={action.href}
+          class="quick-actions__link h-lift"
+          data-tone={action.tone}
+          target={action.isExternal ? '_blank' : undefined}
+          rel={action.isExternal ? 'noopener noreferrer' : undefined}
+        >
+          <span class="h-tile">
+            <Icon name={action.icon} size={ICON_SIZE} />
+          </span>
+          <span class="quick-actions__text">
+            <span class="quick-actions__title">{action.title}</span>
+            <span class="quick-actions__hint">{action.text}</span>
+          </span>
+          <span class="quick-actions__arrow">
+            {action.isExternal ? <ExternalLinkHint /> : <span aria-hidden="true">→</span>}
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .quick-actions {
+    --card-min: 280px;
+  }
+
+  .quick-actions__link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3-5);
+    height: 100%;
+    padding: var(--space-4) var(--space-4-5);
+    border-radius: var(--radius-xl);
+    background: var(--color-surface);
+  }
+
+  .quick-actions__link:hover {
+    background: var(--tone-tint);
+  }
+
+  .quick-actions__arrow {
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  .quick-actions__link:hover .quick-actions__arrow {
+    transform: translateX(3px);
+  }
+
+  .quick-actions__text {
+    flex: 1;
+    line-height: 1.3;
+  }
+
+  .quick-actions__title {
+    display: block;
+    font-size: var(--text-base);
+    font-weight: var(--weight-extrabold);
+  }
+
+  .quick-actions__hint {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .quick-actions__arrow {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-extrabold);
+  }
+</style>

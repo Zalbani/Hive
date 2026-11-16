@@ -1,0 +1,77 @@
+---
+import { TOPIC_STAGE_ORDER, TopicStages, type Topic } from '../domain/topic'
+import { format, type Translation } from '../i18n/t'
+
+interface Props {
+  topic: Topic
+  translation: Translation
+}
+
+const { topic, translation } = Astro.props
+const t = translation.topics
+const currentIndex = TOPIC_STAGE_ORDER.indexOf(topic.stage)
+const isDone = topic.stage === TopicStages.DONE
+const currentLabel =
+  topic.stageNote === null ? t.steps[topic.stage] : `${t.steps[topic.stage]} · ${topic.stageNote}`
+const summary = isDone
+  ? t.doneLabel
+  : format(t.stepsLabel, {
+      current: currentIndex + 1,
+      total: TOPIC_STAGE_ORDER.length,
+      stage: currentLabel,
+    })
+---
+
+<div class="topic-steps">
+  <p class="visually-hidden">{summary}</p>
+  <ol class="topic-steps__list" aria-hidden="true">
+    {TOPIC_STAGE_ORDER.map((stage, index) => (
+      <li
+        class:list={['topic-steps__step', { 'topic-steps__step--reached': index <= currentIndex }]}
+      >
+        <span class="topic-steps__bar" />
+        {index === currentIndex ? (
+          <b class="topic-steps__label topic-steps__label--current">
+            {isDone ? t.doneStep : currentLabel}
+          </b>
+        ) : (
+          <span class="topic-steps__label">{t.steps[stage]}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .topic-steps__list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-1-5);
+    margin: var(--space-1) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .topic-steps__bar {
+    display: block;
+    height: 6px;
+    border-radius: var(--radius-pill);
+    background: var(--color-rule);
+  }
+
+  .topic-steps__step--reached .topic-steps__bar {
+    background: var(--tone-accent);
+  }
+
+  .topic-steps__label {
+    display: block;
+    margin-top: var(--space-1-5);
+    font-size: var(--text-2xs);
+    color: var(--color-ink-muted);
+  }
+
+  .topic-steps__label--current {
+    font-weight: var(--weight-extrabold);
+    color: var(--tone-fg);
+  }
+</style>

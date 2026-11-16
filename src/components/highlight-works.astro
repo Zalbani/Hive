@@ -1,0 +1,128 @@
+---
+import { Tones } from '../domain/tone'
+import type { Topic, WorksSchedule } from '../domain/topic'
+import { format, type Translation } from '../i18n/t'
+import { getTopicHref } from '../data/topics'
+import { daysBetween, formatDayMonth, formatLongDate } from '../utils/dates'
+import { Routes } from '../utils/routes'
+import HighlightFrame from './highlight-frame.astro'
+
+interface Props {
+  topic: Topic
+  schedule: WorksSchedule
+  today: string
+  translation: Translation
+}
+
+const { topic, schedule, today, translation } = Astro.props
+const t = translation.highlight.works
+const DAYS_PER_WEEK = 7
+const totalWeeks = Math.ceil(daysBetween(schedule.startsOn, schedule.endsOn) / DAYS_PER_WEEK)
+const daysSinceStart = daysBetween(schedule.startsOn, today)
+const hasStarted = daysSinceStart >= 0
+const currentWeek = hasStarted
+  ? Math.min(totalWeeks, Math.floor(daysSinceStart / DAYS_PER_WEEK) + 1)
+  : 0
+const weeks = Array.from({ length: totalWeeks }, (_, index) => index < currentWeek)
+---
+
+<HighlightFrame
+  background="works"
+  kicker={hasStarted ? t.kicker : t.kickerUpcoming}
+  kickerTone={Tones.SAGE}
+  title={format(hasStarted ? t.title : t.titleUpcoming, { title: topic.shortTitle })}
+  lead={null}
+>
+  <ul class="works__notices">
+    {schedule.notices.map((notice) => (
+      <li>{notice}</li>
+    ))}
+  </ul>
+  <Fragment slot="actions">
+    <a href={getTopicHref(topic.id)} class="h-btn h-btn--large h-btn--primary">
+      {t.schedule}
+    </a>
+    <a href={Routes.TOPICS} class="h-btn h-btn--large h-btn--glass">
+      {t.follow}
+    </a>
+  </Fragment>
+  <div slot="aside" class="h-float-card works__progress" data-tone={Tones.SAGE}>
+    <p class="h-float-card__label">{t.progressLabel}</p>
+    {hasStarted ? (
+      <p class="works__week">
+        {format(t.week, { current: currentWeek })}
+        <span class="works__total">{format(t.weekTotal, { total: totalWeeks })}</span>
+      </p>
+    ) : (
+      <p class="works__week works__week--date">{formatDayMonth(schedule.startsOn)}</p>
+    )}
+    <ol
+      class="h-segments works__segments"
+      style={`--segment-count:${String(totalWeeks)}`}
+      aria-hidden="true"
+    >
+      {weeks.map((isDone) => (
+        <li class:list={['h-segments__item', { 'h-segments__item--done': isDone }]} />
+      ))}
+    </ol>
+    <p class="works__end">
+      {hasStarted
+        ? format(t.endsOn, { date: formatLongDate(schedule.endsOn) })
+        : format(t.startsOn, { date: formatLongDate(schedule.startsOn) })}
+    </p>
+  </div>
+</HighlightFrame>
+
+<style>
+  .works__notices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-4-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .works__notices li {
+    padding: 7px var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--color-glass-strong);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+  }
+
+  .works__progress {
+    flex: 0 1 250px;
+  }
+
+  .works__week {
+    margin-top: var(--space-1);
+    font-size: 44px;
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-snug);
+  }
+
+  .works__week--date {
+    font-size: var(--text-stat);
+  }
+
+  .works__total {
+    font-size: var(--text-2xl);
+    color: var(--color-ink-muted);
+  }
+
+  .works__segments {
+    margin-top: var(--space-3-5);
+  }
+
+  .works__segments :global(.h-segments__item) {
+    height: 8px;
+  }
+
+  .works__end {
+    margin-top: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-ink-soft);
+  }
+</style>

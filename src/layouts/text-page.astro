@@ -1,0 +1,36 @@
+---
+import { getResidence } from '../data/residence'
+import SiteLayout from './site-layout.astro'
+
+interface Props {
+  pageTitle: string
+  paragraphs: string[]
+}
+
+const { pageTitle, paragraphs } = Astro.props
+const residence = await getResidence()
+---
+
+<SiteLayout pageTitle={pageTitle} residence={residence} currentSection={null}>
+  <article class="text-page">
+    <h1 class="h-page-title">{pageTitle}</h1>
+    {paragraphs.map((paragraph) => (
+      <p>{paragraph}</p>
+    ))}
+    <slot />
+  </article>
+</SiteLayout>
+
+<style>
+  .text-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    max-width: 720px;
+    padding: var(--hero-padding);
+    border-radius: var(--radius-hero);
+    background: var(--color-surface);
+    line-height: var(--leading-relaxed);
+    color: var(--color-ink-soft);
+  }
+</style>

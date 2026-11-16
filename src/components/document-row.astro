@@ -1,0 +1,121 @@
+---
+import type { ResidenceDocument } from '../domain/document'
+import { DOCUMENT_CATEGORY_TONES } from '../domain/presentation'
+import type { Translation } from '../i18n/t'
+import { getDocumentHref } from '../data/documents'
+import { formatDocumentDate } from '../utils/dates'
+import { getDocumentOpenLabel } from '../utils/document-labels'
+
+interface Props {
+  document: ResidenceDocument
+  isCompact: boolean
+  translation: Translation
+}
+
+const { document, isCompact, translation } = Astro.props
+const t = translation.documents
+---
+
+<a
+  href={getDocumentHref(document.id)}
+  target="_blank"
+  rel="noopener"
+  class:list={['document-row', 'h-row-link', { 'document-row--compact': isCompact }]}
+  data-tone={DOCUMENT_CATEGORY_TONES[document.category]}
+  aria-label={getDocumentOpenLabel(document, translation)}
+>
+  <span class="document-row__title">{document.title}</span>
+  <span class="document-row__category">
+    <span class="h-tag">{t.categoryTags[document.category]}</span>
+  </span>
+  <span class="document-row__date h-numeric">
+    {formatDocumentDate(document.publishedOn, document.datePrecision)}
+  </span>
+  <span class="document-row__open" aria-hidden="true">
+    {isCompact ? '↗' : t.pdf}
+  </span>
+</a>
+
+<style>
+  .document-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    padding-block: var(--space-4);
+  }
+
+  .document-row__title {
+    flex: 1 1 260px;
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+  }
+
+  .document-row__category {
+    width: 140px;
+  }
+
+  .document-row__date {
+    width: 70px;
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+    text-align: right;
+  }
+
+  .document-row__open {
+    padding: 7px var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--color-chip);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    transition:
+      background-color var(--duration-fast) ease,
+      color var(--duration-fast) ease,
+      transform var(--duration-base) var(--ease-out);
+  }
+
+  .document-row:hover .document-row__open {
+    background: var(--tone-bg);
+    color: var(--tone-fg);
+  }
+
+  .document-row--compact {
+    gap: var(--space-2) var(--space-3-5);
+    padding-block: var(--space-3-5);
+  }
+
+  .document-row--compact .document-row__title {
+    font-size: var(--text-md);
+  }
+
+  .document-row--compact .document-row__category {
+    width: auto;
+  }
+
+  .document-row--compact .document-row__date {
+    font-size: var(--text-xs);
+  }
+
+  .document-row--compact .document-row__open {
+    padding: 0;
+    background: none;
+    color: var(--tone-fg);
+    font-weight: var(--weight-extrabold);
+  }
+
+  .document-row--compact:hover .document-row__open {
+    background: none;
+    transform: translate(2px, -2px);
+  }
+
+  @media (max-width: 560px) {
+    .document-row__category,
+    .document-row__date {
+      width: auto;
+    }
+
+    .document-row__open {
+      margin-left: auto;
+    }
+  }
+</style>

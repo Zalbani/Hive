@@ -1,0 +1,117 @@
+---
+import EmergencyPanel from '../components/emergency-panel.astro'
+import ExternalLinkHint from '../components/external-link-hint.astro'
+import FaqBrowser from '../components/faq-browser.astro'
+import PageHero from '../components/page-hero.astro'
+import { getContacts } from '../data/contacts'
+import { getFaqEntries } from '../data/faq'
+import { getResidence } from '../data/residence'
+import { format, getTranslation, Locales } from '../i18n/t'
+import SiteLayout from '../layouts/site-layout.astro'
+import { NavSections, toMailtoHref } from '../utils/routes'
+
+const translation = getTranslation(Locales.FR)
+const t = translation.faq
+const [residence, entries, contacts] = await Promise.all([
+  getResidence(),
+  getFaqEntries(),
+  getContacts(),
+])
+const bookingLinks = [
+  { href: residence.links.sharedSpacesBooking, label: t.bookSharedSpaces },
+  { href: residence.links.visitorParking, label: t.bookParking },
+]
+const askHref = toMailtoHref(residence.councilEmail, format(t.askSubject, { name: residence.name }))
+---
+
+<SiteLayout pageTitle={t.metaTitle} residence={residence} currentSection={NavSections.FAQ}>
+  <div class="faq">
+    <PageHero background={NavSections.FAQ} title={t.title} lead={t.lead} />
+    <div class="faq__layout">
+      <FaqBrowser entries={entries} translation={translation} />
+      <aside class="faq__aside">
+        <EmergencyPanel title={t.emergenciesTitle} emergencies={contacts.emergencies} />
+        <section class="h-panel" aria-labelledby="book-title">
+          <h2 id="book-title" class="h-panel__title faq__aside-title">
+            {t.bookTitle}
+          </h2>
+          <ul class="faq__book">
+            {bookingLinks.map(({ href, label }) => (
+              <li>
+                <a href={href} target="_blank" rel="noopener noreferrer" class="faq__book-link">
+                  <span>{label}</span>
+                  <ExternalLinkHint />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section class="h-panel" aria-labelledby="ask-title">
+          <h2 id="ask-title" class="h-panel__title">
+            {t.askTitle}
+          </h2>
+          <p class="h-panel__text">{t.askText}</p>
+          <a href={askHref} class="h-btn h-btn--primary h-btn--block">
+            {t.askCta}
+          </a>
+        </section>
+      </aside>
+    </div>
+  </div>
+</SiteLayout>
+
+<style>
+  .faq {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-7);
+  }
+
+  .faq__layout {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-7);
+  }
+
+  .faq__aside {
+    flex: 1 1 240px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .faq__aside-title {
+    margin-bottom: var(--space-2-5);
+  }
+
+  .faq__book {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .faq__book-link {
+    transition: background-color var(--duration-fast) ease;
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-2-5) var(--space-3-5);
+    border-radius: var(--radius-md);
+    background: var(--color-chip);
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+  }
+
+  .faq__book-link:hover {
+    background: var(--color-rule);
+  }
+
+  @media (min-width: 1100px) {
+    .faq__aside {
+      max-width: 280px;
+    }
+  }
+</style>

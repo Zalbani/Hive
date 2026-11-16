@@ -1,0 +1,65 @@
+---
+import { FAQ_THEME_ORDER, type FaqEntry } from '../domain/faq'
+import { FAQ_THEME_TONES } from '../domain/presentation'
+import type { Translation } from '../i18n/t'
+import FaqEntryItem from './faq-entry.astro'
+
+interface Props {
+  entries: FaqEntry[]
+  translation: Translation
+}
+
+const { entries, translation } = Astro.props
+const t = translation.faq
+const themes = FAQ_THEME_ORDER.map((theme) => ({
+  theme,
+  anchor: `faq-${theme}`,
+  tone: FAQ_THEME_TONES[theme],
+  entries: entries.filter((entry) => entry.theme === theme),
+})).filter((group) => group.entries.length > 0)
+---
+
+<div class="faq-groups">
+  {themes.map((group) => (
+    <section
+      id={group.anchor}
+      class="faq-groups__section"
+      data-tone={group.tone}
+      aria-labelledby={`${group.anchor}-title`}
+    >
+      <h2 id={`${group.anchor}-title`} class="faq-groups__title">
+        <span class="h-tag">{t.themes[group.theme]}</span>
+      </h2>
+      {group.entries.map((entry) => (
+        <FaqEntryItem entry={entry} translation={translation} />
+      ))}
+    </section>
+  ))}
+</div>
+
+<style>
+  .faq-groups {
+    flex: 999 1 480px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6-5);
+    scroll-margin-top: var(--space-6);
+  }
+
+  .faq-groups__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2-5);
+    scroll-margin-top: var(--space-6);
+  }
+
+  .faq-groups__title {
+    line-height: 1;
+  }
+
+  .faq-groups__title :global(.h-tag) {
+    padding: 5px var(--space-3);
+    font-weight: var(--weight-extrabold);
+  }
+</style>

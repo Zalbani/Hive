@@ -1,0 +1,283 @@
+---
+import type { Residence } from '../domain/residence'
+import { Tones, type Tone } from '../domain/tone'
+import { format, type Translation } from '../i18n/t'
+import { IconNames, type IconName } from '../utils/icons'
+import { NavSections, Routes, type NavSection } from '../utils/routes'
+import BrandMark from './brand-mark.astro'
+import Icon from './icon.astro'
+
+interface Props {
+  residence: Residence
+  currentSection: NavSection | null
+  translation: Translation
+}
+
+const { residence, currentSection, translation } = Astro.props
+
+const NAV_ITEMS: { section: NavSection; href: string; tone: Tone; icon: IconName }[] = [
+  { section: NavSections.HOME, href: Routes.HOME, tone: Tones.INK, icon: IconNames.HOME },
+  {
+    section: NavSections.DOCUMENTS,
+    href: Routes.DOCUMENTS,
+    tone: Tones.LILAC,
+    icon: IconNames.DOCUMENT,
+  },
+  {
+    section: NavSections.TOPICS,
+    href: Routes.TOPICS,
+    tone: Tones.PEACH,
+    icon: IconNames.CLIPBOARD,
+  },
+  { section: NavSections.FAQ, href: Routes.FAQ, tone: Tones.ROSE, icon: IconNames.INFO },
+  { section: NavSections.CONTACTS, href: Routes.CONTACTS, tone: Tones.SAGE, icon: IconNames.PHONE },
+]
+
+const TAB_ICON_SIZE = 22
+const BRAND_SIZE = 40
+---
+
+<header class="site-header">
+  <a
+    href={Routes.HOME}
+    class="site-header__brand"
+    aria-label={format(translation.header.homeLabel, { name: residence.name })}
+  >
+    <BrandMark size={BRAND_SIZE} />
+    <span class="site-header__identity">
+      <span class="site-header__name">{residence.name}</span>
+      <span class="site-header__place">
+        {residence.city} {residence.district}
+      </span>
+    </span>
+  </a>
+  <nav class="site-header__nav-wrapper" aria-label={translation.header.navLabel}>
+    <ul class="site-header__nav">
+      {NAV_ITEMS.map(({ section, href, tone }) => (
+        <li>
+          <a
+            href={href}
+            class="site-header__link"
+            data-tone={tone}
+            aria-current={section === currentSection ? 'page' : undefined}
+          >
+            {translation.nav[section]}
+            {section === currentSection && (
+              <span class="site-header__underline" aria-hidden="true" />
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<nav class="tab-bar" aria-label={translation.header.navLabel}>
+  <ul class="tab-bar__list">
+    {NAV_ITEMS.map(({ section, href, tone, icon }) => (
+      <li>
+        <a
+          href={href}
+          class="tab-bar__link"
+          data-tone={tone}
+          aria-current={section === currentSection ? 'page' : undefined}
+        >
+          <span class="tab-bar__icon" aria-hidden="true">
+            {section === currentSection && <span class="tab-bar__indicator" />}
+            <Icon name={icon} size={TAB_ICON_SIZE} />
+          </span>
+          <span class="tab-bar__label">{translation.navShort[section]}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .site-header {
+    view-transition-name: site-header;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0 var(--space-7);
+    padding: 0 var(--gutter);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .site-header__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3-5) 0;
+  }
+
+  .site-header__identity {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  .site-header__name {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-snug);
+  }
+
+  .site-header__place {
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    color: var(--color-ink-muted);
+  }
+
+  .site-header__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-7);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--text-base);
+  }
+
+  .site-header__link {
+    position: relative;
+    display: block;
+    padding: 25px 0 21px;
+    border-bottom: 3px solid transparent;
+    color: var(--color-ink-muted);
+    font-weight: var(--weight-semibold);
+    transition:
+      color var(--duration-fast) ease,
+      border-color var(--duration-fast) ease;
+  }
+
+  .site-header__link:hover {
+    color: var(--color-ink);
+    border-bottom-color: var(--tone-accent);
+  }
+
+  .site-header__link[aria-current='page'] {
+    color: var(--color-ink);
+    font-weight: var(--weight-extrabold);
+    border-bottom-color: transparent;
+  }
+
+  .site-header__underline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -3px;
+    height: 3px;
+    background: var(--tone-accent);
+    view-transition-name: nav-underline;
+  }
+
+  /* Mobile: the header keeps only the brand, navigation moves to a bottom tab bar within thumb
+     reach. During page transitions the bar is its own layer kept above the content and switched
+     without any fade (see base.css); the current tab's pill pops in on the new page. */
+  .tab-bar {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .site-header__nav-wrapper {
+      display: none;
+    }
+
+    .site-header__brand {
+      padding: var(--space-2-5) 0;
+    }
+
+    .tab-bar {
+      view-transition-name: tab-bar;
+      position: fixed;
+      inset: auto 0 0;
+      z-index: 100;
+      display: block;
+      padding: var(--space-1-5) var(--space-2) calc(var(--space-1-5) + env(safe-area-inset-bottom));
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-rule);
+      box-shadow: var(--shadow-bar);
+    }
+
+    .tab-bar__list {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tab-bar__link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: var(--space-1) 0;
+      color: var(--color-ink-muted);
+      font-size: var(--text-2xs);
+      font-weight: var(--weight-semibold);
+      transition: color var(--duration-fast) ease;
+    }
+
+    @media (hover: hover) {
+      .tab-bar__link:hover {
+        color: var(--tone-fg);
+      }
+
+      .tab-bar__link[data-tone='ink']:hover {
+        color: var(--color-ink);
+      }
+    }
+
+    @keyframes tab-indicator-in {
+      from {
+        opacity: 0;
+        transform: scale(0.6);
+      }
+    }
+
+    .tab-bar__link[aria-current='page'] {
+      color: var(--color-ink);
+      font-weight: var(--weight-extrabold);
+    }
+
+    .tab-bar__icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 30px;
+    }
+
+    .tab-bar__icon svg {
+      position: relative;
+    }
+
+    .tab-bar__link[aria-current='page'] .tab-bar__icon {
+      color: var(--tone-fg);
+    }
+
+    .tab-bar__link[data-tone='ink'][aria-current='page'] .tab-bar__icon {
+      color: var(--color-on-ink);
+    }
+
+    .tab-bar__indicator {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-pill);
+      background: var(--tone-bg);
+      animation: tab-indicator-in var(--duration-slow) var(--ease-out) both;
+    }
+
+    .tab-bar__label {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+</style>

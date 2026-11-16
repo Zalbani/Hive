@@ -1,0 +1,55 @@
+---
+import { DocumentCategories, type ResidenceDocument } from '../domain/document'
+import { DOCUMENT_CATEGORY_TONES } from '../domain/presentation'
+import { format, type Translation } from '../i18n/t'
+import DocumentRow from './document-row.astro'
+import FilterButtons from './filter-buttons.astro'
+
+interface Props {
+  documents: ResidenceDocument[]
+  translation: Translation
+}
+
+const { documents, translation } = Astro.props
+const t = translation.documents
+const options = Object.values(DocumentCategories).map((category) => ({
+  value: category,
+  label: t.categories[category],
+  tone: DOCUMENT_CATEGORY_TONES[category],
+}))
+---
+
+<section class="document-list" aria-labelledby="all-documents-title">
+  <h2 id="all-documents-title" class="h-subheading h-subheading--small">
+    {t.allTitle}
+  </h2>
+  <FilterButtons
+    label={t.filtersLabel}
+    allLabel={format(t.all, { count: documents.length })}
+    options={options}
+    dotColor="dot"
+  />
+  <ul class="h-list-card h-list-card--rows document-list__card">
+    {documents.map((document) => (
+      <li data-filter-item data-filter-key={document.category}>
+        <DocumentRow document={document} isCompact={false} translation={translation} />
+      </li>
+    ))}
+  </ul>
+</section>
+
+<script>
+  import '../scripts/list-filter'
+</script>
+
+<style>
+  .document-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .document-list__card {
+    --row-padding: var(--space-6);
+  }
+</style>

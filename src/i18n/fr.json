@@ -1,0 +1,294 @@
+{
+  "meta": {
+    "siteName": "Résidence {name}",
+    "titleSuffix": "{name}",
+    "description": "Le portail des résidents : documents de la copropriété, sujets en cours, infos pratiques et contacts."
+  },
+  "skipLink": "Aller au contenu",
+  "header": {
+    "homeLabel": "{name}, accueil",
+    "navLabel": "Navigation principale"
+  },
+  "nav": {
+    "home": "Accueil",
+    "documents": "Documents",
+    "topics": "Sujets en cours",
+    "faq": "Infos pratiques",
+    "contacts": "Contacts"
+  },
+  "navShort": {
+    "home": "Accueil",
+    "documents": "Documents",
+    "topics": "Sujets",
+    "faq": "Infos",
+    "contacts": "Contacts"
+  },
+  "breadcrumb": {
+    "label": "Fil d’Ariane"
+  },
+  "footer": {
+    "residence": "Résidence {name} · {city} {district}",
+    "syndic": "Syndic : {name}",
+    "linksLabel": "Liens utiles",
+    "sharedSpaces": "Réserver un espace partagé",
+    "visitorParking": "Parking visiteurs",
+    "residentsGroup": "Groupe WhatsApp des résidents",
+    "legal": "Mentions légales",
+    "privacy": "Confidentialité",
+    "signOut": "Se déconnecter"
+  },
+  "external": {
+    "newTab": "(nouvel onglet)"
+  },
+  "access": {
+    "metaTitle": "Accès résidents",
+    "title": "Bienvenue sur le portail de la résidence",
+    "lead": "Ce site est réservé aux résidents. Entrez le code de la résidence : il est affiché dans le hall et rappelé dans chaque convocation d’AG.",
+    "codeLabel": "Code de la résidence",
+    "submit": "Entrer",
+    "error": "Ce code ne correspond pas. Vérifiez-le sur l’affiche du hall ou demandez-le au conseil syndical.",
+    "help": "Pas de code ? Écrivez au conseil syndical."
+  },
+  "home": {
+    "metaTitle": "Accueil",
+    "quickActionsLabel": "Actions rapides",
+    "quickActions": {
+      "sharedSpacesTitle": "Réserver un espace partagé",
+      "sharedSpacesText": "Salle commune, jardin…",
+      "reportTitle": "Signaler un problème",
+      "reportText": "Fuite, panne, dégradation…",
+      "groupTitle": "Rejoindre le groupe WhatsApp",
+      "groupText": "Entraide entre résidents"
+    },
+    "topicsTitle": "Sujets en cours",
+    "topicsLink": "Tous les sujets ({count}) →",
+    "faqTitle": "Infos pratiques",
+    "faqLink": "Toutes les questions →",
+    "contactsTitle": "Qui appeler",
+    "contactsLink": "Tous →",
+    "councilLabel": "Conseil syndical",
+    "councilPresident": "{name}, président",
+    "write": "Écrire",
+    "documentsTitle": "Derniers documents",
+    "documentsLink": "Tous les documents ({count}) →",
+    "progressLabel": "Étape {current} sur {total}"
+  },
+  "highlight": {
+    "label": "À la une",
+    "assembly": {
+      "kicker": "À la une · action requise",
+      "title": {
+        "ordinary": "Assemblée générale ordinaire — {date}",
+        "extraordinary": "Assemblée générale extraordinaire — {date}"
+      },
+      "lead": "Convocation envoyée le {date}. Consultez l’ordre du jour, et transmettez votre pouvoir si vous ne pouvez pas être présent.",
+      "agenda": "Voir l’ordre du jour",
+      "proxy": "Donner pouvoir",
+      "countdownLabel": "Dans",
+      "today": "Aujourd’hui",
+      "days": {
+        "one": "{count} jour",
+        "other": "{count} jours"
+      },
+      "dateTime": "{date} · {time}"
+    },
+    "works": {
+      "kicker": "À la une · travaux en cours",
+      "kickerUpcoming": "À la une · travaux à venir",
+      "schedule": "Voir le planning",
+      "follow": "Suivre le sujet",
+      "progressLabel": "Avancement",
+      "week": "Sem. {current}",
+      "weekTotal": " / {total}",
+      "startsOn": "Démarrage le {date}",
+      "endsOn": "Fin prévue le {date}",
+      "title": "{title} : le chantier a démarré",
+      "titleUpcoming": "{title} : le chantier approche"
+    },
+    "action": {
+      "kicker": "À la une · votre avis compte",
+      "deadline": "Réponses avant le {date}.",
+      "answer": "Donner mon avis",
+      "proposals": "Voir les propositions",
+      "alreadyLabel": "Déjà",
+      "responded": "lots sur {total} ont répondu",
+      "closesOn": "Clôture le {date}"
+    },
+    "summary": {
+      "kicker": "À la une · ce mois-ci",
+      "title": "Bonjour ! Voici ce qui bouge dans la résidence.",
+      "lead": "Aucune urgence en ce moment.",
+      "topicsCta": "Voir les sujets en cours",
+      "topicsBadge": "Sujets en cours",
+      "topicsCount": {
+        "one": "{count} dossier suivi",
+        "other": "{count} dossiers suivis"
+      },
+      "topicsLatest": "Dernier : {title}",
+      "noTopics": "Aucun dossier en cours",
+      "documentBadge": "Nouveau document",
+      "documentAdded": "Ajouté le {date} · PDF",
+      "eventBadge": "À venir",
+      "eventDetail": "{date} · {detail}"
+    }
+  },
+  "documents": {
+    "metaTitle": "Documents",
+    "title": "Documents de la copropriété",
+    "essentialsTitle": "Les essentiels",
+    "allTitle": "Tous les documents",
+    "filtersLabel": "Filtrer par catégorie",
+    "all": "Tous · {count}",
+    "open": "Ouvrir ↗",
+    "pdf": "PDF ↗",
+    "meta": "{date} · PDF · {size}",
+    "categories": {
+      "assembly": "Comptes-rendus d’AG",
+      "regulation": "Règlement & juridique",
+      "technical": "Technique",
+      "references": "Références & matériaux",
+      "finances": "Finances"
+    },
+    "categoryTags": {
+      "assembly": "Assemblées",
+      "regulation": "Règlement",
+      "technical": "Technique",
+      "references": "Références",
+      "finances": "Finances"
+    },
+    "essentialBadges": {
+      "assembly": "Dernier CR",
+      "regulation": "Règlement",
+      "technical": "Technique",
+      "references": "Références",
+      "finances": "Finances"
+    },
+    "openLabel": "Ouvrir {title} dans un nouvel onglet (PDF, {size})"
+  },
+  "topics": {
+    "metaTitle": "Sujets en cours",
+    "title": "Sujets en cours",
+    "lead": "Travaux, devis, signalements, votes : où en est chaque dossier de la copropriété, mis à jour par le conseil syndical.",
+    "statsLabel": "Chiffres clés",
+    "statActive": "en cours",
+    "statVote": "à voter en AG",
+    "statDone": "terminés en {year}",
+    "filtersLabel": "Filtrer par étape",
+    "all": "Tous · {count}",
+    "updatedOn": "Mis à jour le {date}",
+    "closedOn": "Clôturé le {date}",
+    "empty": "Aucun sujet à cette étape pour le moment.",
+    "stepsLabel": "Étape {current} sur {total} : {stage}",
+    "doneLabel": "Terminé",
+    "doneStep": "Terminé ✓",
+    "badges": {
+      "reported": "Signalé",
+      "quotes": "Devis en cours",
+      "vote": "À voter en AG",
+      "works": "Travaux planifiés",
+      "done": "Terminé"
+    },
+    "filters": {
+      "reported": "Signalé",
+      "quotes": "Devis en cours",
+      "vote": "À voter en AG",
+      "works": "Travaux",
+      "done": "Terminé"
+    },
+    "steps": {
+      "reported": "Signalé",
+      "quotes": "Devis",
+      "vote": "Vote AG",
+      "works": "Travaux",
+      "done": "Terminé"
+    },
+    "reportTitle": "Un problème à signaler ?",
+    "reportText": "Décrivez-le en quelques mots : le conseil syndical l’ajoute au suivi et vous prévient à chaque étape.",
+    "reportCta": "Signaler un problème",
+    "reportSubject": "Signalement — résidence {name}",
+    "stepsTitle": "Les étapes d’un dossier",
+    "stepsHelp": {
+      "reported": "constat, expertise si besoin",
+      "quotes": "mise en concurrence",
+      "vote": "décision des copropriétaires",
+      "works": "planning et suivi",
+      "done": "réception, documents archivés"
+    }
+  },
+  "faq": {
+    "metaTitle": "Infos pratiques",
+    "title": "Infos pratiques",
+    "lead": "Les réponses aux questions qu’on se pose dans la résidence : références de peinture, chauffage, poubelles, accès, urgences…",
+    "documentLink": "Voir la fiche correspondante (PDF) ↗",
+    "themes": {
+      "paint": "Peinture & matériaux",
+      "heating": "Chauffage & eau chaude",
+      "waste": "Poubelles & tri",
+      "access": "Accès, badges & parking",
+      "community": "Vie de la résidence"
+    },
+    "emergenciesTitle": "Urgences",
+    "bookTitle": "Réserver",
+    "bookSharedSpaces": "Espaces partagés",
+    "bookParking": "Parking visiteurs",
+    "askTitle": "Vous ne trouvez pas ?",
+    "askText": "Posez votre question : le conseil syndical y répond et l’ajoute ici si elle peut servir à tous.",
+    "askCta": "Poser une question",
+    "askSubject": "Question — résidence {name}"
+  },
+  "contacts": {
+    "metaTitle": "Contacts",
+    "title": "Contacts",
+    "lead": "Qui appeler, et pour quoi : le syndic, le conseil syndical et les prestataires de la résidence.",
+    "syndicBadge": "Syndic",
+    "manager": "Gestionnaire de la résidence : {name}",
+    "phone": "Téléphone",
+    "email": "E-mail",
+    "hours": "Horaires",
+    "call": "Appeler le syndic",
+    "write": "Écrire un e-mail",
+    "emergenciesTitle": "Urgences 24h/24",
+    "councilTitle": "Conseil syndical",
+    "roles": {
+      "president": "Président",
+      "member": "Membre"
+    },
+    "memberMeta": "{role} · {building}",
+    "follows": "Suit : {topics}",
+    "writeTo": "Écrire à {name}",
+    "groupTitle": "Groupe WhatsApp des résidents",
+    "groupText": "Entraide, objets trouvés, infos rapides entre voisins. Pour une demande officielle, écrivez au syndic.",
+    "groupCta": "Rejoindre le groupe",
+    "providersTitle": "Prestataires & numéros utiles",
+    "providerCategories": {
+      "heating": "Chauffage",
+      "elevator": "Ascenseur",
+      "cleaning": "Ménage",
+      "green-spaces": "Espaces verts",
+      "waste": "Déchets"
+    },
+    "providerLine": "{name} — {service}"
+  },
+  "legal": {
+    "metaTitle": "Mentions légales",
+    "title": "Mentions légales",
+    "body": [
+      "Ce portail est édité par le conseil syndical de la résidence pour l’information des résidents.",
+      "Contenu de démonstration : les informations définitives (éditeur, hébergeur, responsable de publication) seront ajoutées avant la mise en ligne."
+    ]
+  },
+  "privacy": {
+    "metaTitle": "Confidentialité",
+    "title": "Confidentialité",
+    "body": [
+      "Le portail ne dépose qu’un seul cookie, strictement nécessaire : il retient que vous avez saisi le code de la résidence, pendant 90 jours. Aucun outil de mesure d’audience ni aucun traceur publicitaire n’est utilisé.",
+      "Contenu de démonstration : la politique complète (données des documents, durée de conservation, contact) sera ajoutée avant la mise en ligne."
+    ]
+  },
+  "notFound": {
+    "metaTitle": "Page introuvable",
+    "title": "Cette page n’existe pas",
+    "lead": "Le lien est peut-être ancien, ou la page a été déplacée.",
+    "back": "Revenir à l’accueil"
+  }
+}

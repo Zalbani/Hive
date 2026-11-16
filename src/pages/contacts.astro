@@ -1,0 +1,110 @@
+---
+import CouncilMembers from '../components/council-members.astro'
+import EmergencyPanel from '../components/emergency-panel.astro'
+import ExternalLinkHint from '../components/external-link-hint.astro'
+import Icon from '../components/icon.astro'
+import PageHero from '../components/page-hero.astro'
+import ProviderList from '../components/provider-list.astro'
+import SyndicCard from '../components/syndic-card.astro'
+import { getContacts } from '../data/contacts'
+import { getResidence } from '../data/residence'
+import { getTranslation, Locales } from '../i18n/t'
+import SiteLayout from '../layouts/site-layout.astro'
+import { IconNames } from '../utils/icons'
+import { NavSections } from '../utils/routes'
+
+const translation = getTranslation(Locales.FR)
+const t = translation.contacts
+const ICON_SIZE = 24
+const [residence, contacts] = await Promise.all([getResidence(), getContacts()])
+---
+
+<SiteLayout pageTitle={t.metaTitle} residence={residence} currentSection={NavSections.CONTACTS}>
+  <PageHero background={NavSections.CONTACTS} title={t.title} lead={t.lead} />
+  <div class="contacts__top">
+    <SyndicCard syndic={contacts.syndic} translation={translation} />
+    <div class="contacts__emergencies">
+      <EmergencyPanel title={t.emergenciesTitle} emergencies={contacts.emergencies} />
+    </div>
+  </div>
+  <CouncilMembers members={contacts.councilMembers} translation={translation} />
+  <section class="contacts__group" aria-labelledby="group-title">
+    <div class="contacts__group-text">
+      <span class="h-tile contacts__group-icon">
+        <Icon name={IconNames.CHAT} size={ICON_SIZE} />
+      </span>
+      <div>
+        <h2 id="group-title" class="contacts__group-title">
+          {t.groupTitle}
+        </h2>
+        <p class="contacts__group-lead">{t.groupText}</p>
+      </div>
+    </div>
+    <a
+      href={residence.links.residentsGroup}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="h-btn h-btn--primary contacts__group-cta"
+    >
+      {t.groupCta} <ExternalLinkHint />
+    </a>
+  </section>
+  <ProviderList providers={contacts.providers} translation={translation} />
+</SiteLayout>
+
+<style>
+  .contacts__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: var(--space-5);
+  }
+
+  .contacts__emergencies {
+    flex: 1 1 280px;
+    display: flex;
+  }
+
+  .contacts__emergencies > :global(*) {
+    flex: 1;
+  }
+
+  .contacts__group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-5-5) var(--space-6-5);
+    border-radius: var(--radius-3xl);
+    background: var(--sage-bg);
+  }
+
+  .contacts__group-text {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    line-height: 1.4;
+  }
+
+  .contacts__group-icon {
+    --tile-size: 48px;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    color: var(--sage-fg);
+  }
+
+  .contacts__group-title {
+    font-size: 17px;
+    font-weight: var(--weight-extrabold);
+  }
+
+  .contacts__group-lead {
+    font-size: var(--text-md);
+    color: var(--sage-fg);
+  }
+
+  .contacts__group-cta {
+    white-space: nowrap;
+  }
+</style>

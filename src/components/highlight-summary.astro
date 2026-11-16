@@ -1,0 +1,124 @@
+---
+import type { SummaryHighlight } from '../domain/highlight'
+import type { Residence } from '../domain/residence'
+import { Tones } from '../domain/tone'
+import { format, formatPlural, type Translation } from '../i18n/t'
+import { getDocumentHref } from '../data/documents'
+import { formatNumericDate, formatWeekdayDayMonth } from '../utils/dates'
+import { Routes } from '../utils/routes'
+import HighlightFrame from './highlight-frame.astro'
+
+interface Props {
+  highlight: SummaryHighlight
+  residence: Residence
+  translation: Translation
+}
+
+const { highlight, residence, translation } = Astro.props
+const t = translation.highlight.summary
+const latestTopic =
+  highlight.activeTopics.toSorted((first, second) =>
+    second.updatedOn.localeCompare(first.updatedOn),
+  )[0] ?? null
+const { latestDocument, nextEvent } = highlight
+---
+
+<HighlightFrame
+  background="summary"
+  kicker={t.kicker}
+  kickerTone={Tones.LILAC}
+  title={t.title}
+  lead={`${t.lead} ${residence.nextAssemblyNote}`}
+>
+  <a slot="aside" href={Routes.TOPICS} class="h-btn h-btn--large h-btn--primary summary__cta">
+    {t.topicsCta}
+  </a>
+  <ul slot="footer" class="summary__cards">
+    <li>
+      <a href={Routes.TOPICS} class="summary__card h-lift" data-tone={Tones.PEACH}>
+        <span class="h-badge">{t.topicsBadge}</span>
+        <span class="summary__card-title">
+          {formatPlural(t.topicsCount, highlight.activeTopics.length)}
+        </span>
+        <span class="summary__card-text">
+          {latestTopic === null ? t.noTopics : format(t.topicsLatest, { title: latestTopic.title })}
+        </span>
+      </a>
+    </li>
+    {latestDocument !== null && (
+      <li>
+        <a
+          href={getDocumentHref(latestDocument.id)}
+          target="_blank"
+          rel="noopener"
+          class="summary__card h-lift"
+          data-tone={Tones.LILAC}
+        >
+          <span class="h-badge">{t.documentBadge}</span>
+          <span class="summary__card-title">{latestDocument.title}</span>
+          <span class="visually-hidden">{translation.external.newTab}</span>
+          <span class="summary__card-text">
+            {format(t.documentAdded, { date: formatNumericDate(latestDocument.publishedOn) })}
+          </span>
+        </a>
+      </li>
+    )}
+    {nextEvent !== null && (
+      <li>
+        <div class="summary__card">
+          <span class="h-badge" data-tone={Tones.ROSE}>
+            {t.eventBadge}
+          </span>
+          <span class="summary__card-title">{nextEvent.title}</span>
+          <span class="summary__card-text">
+            {format(t.eventDetail, {
+              date: formatWeekdayDayMonth(nextEvent.happensOn),
+              detail: nextEvent.detail,
+            })}
+          </span>
+        </div>
+      </li>
+    )}
+  </ul>
+</HighlightFrame>
+
+<style>
+  .summary__cta {
+    flex-shrink: 0;
+    align-self: flex-end;
+  }
+
+  .summary__cards {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-3-5);
+    margin: var(--space-7) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .summary__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    height: 100%;
+    padding: var(--space-4-5) var(--space-5);
+    border-radius: var(--radius-2xl);
+    background: var(--color-surface);
+  }
+
+  .summary__card:is(a):hover {
+    background: var(--tone-tint);
+  }
+
+  .summary__card-title {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-extrabold);
+  }
+
+  .summary__card-text {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+</style>

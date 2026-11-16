@@ -1,0 +1,33 @@
+---
+import type { ResidenceDocument } from '../domain/document'
+import { Tones } from '../domain/tone'
+import { format, type Translation } from '../i18n/t'
+import { Routes } from '../utils/routes'
+import DocumentRow from './document-row.astro'
+import SectionHeading from './section-heading.astro'
+
+interface Props {
+  documents: ResidenceDocument[]
+  totalCount: number
+  translation: Translation
+}
+
+const { documents, totalCount, translation } = Astro.props
+const t = translation.home
+---
+
+<section>
+  <SectionHeading
+    title={t.documentsTitle}
+    tone={Tones.LILAC}
+    linkHref={Routes.DOCUMENTS}
+    linkLabel={format(t.documentsLink, { count: totalCount })}
+  />
+  <ul class="h-list-card h-list-card--rows">
+    {documents.map((document) => (
+      <li>
+        <DocumentRow document={document} isCompact={true} translation={translation} />
+      </li>
+    ))}
+  </ul>
+</section>

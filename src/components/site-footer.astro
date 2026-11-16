@@ -1,0 +1,107 @@
+---
+import type { Residence } from '../domain/residence'
+import { format, type Translation } from '../i18n/t'
+import { Routes } from '../utils/routes'
+import ExternalLinkHint from './external-link-hint.astro'
+
+interface Props {
+  residence: Residence
+  translation: Translation
+}
+
+const { residence, translation } = Astro.props
+const t = translation.footer
+const externalLinks = [
+  { href: residence.links.sharedSpacesBooking, label: t.sharedSpaces },
+  { href: residence.links.visitorParking, label: t.visitorParking },
+  { href: residence.links.residentsGroup, label: t.residentsGroup },
+]
+---
+
+<footer class="site-footer">
+  <p class="site-footer__identity">
+    {format(t.residence, {
+      name: residence.name,
+      city: residence.city,
+      district: residence.district,
+    })}
+    <br />
+    {format(t.syndic, { name: residence.syndicName })}
+  </p>
+  <nav aria-label={t.linksLabel}>
+    <ul class="site-footer__links">
+      {externalLinks.map(({ href, label }) => (
+        <li>
+          <a href={href} target="_blank" rel="noopener noreferrer">
+            {label} <ExternalLinkHint />
+          </a>
+        </li>
+      ))}
+      <li>
+        <a href={Routes.LEGAL}>{t.legal}</a>
+      </li>
+      <li>
+        <a href={Routes.PRIVACY}>{t.privacy}</a>
+      </li>
+      <li>
+        <form method="post" action={Routes.SIGN_OUT}>
+          <button type="submit" class="site-footer__sign-out">
+            {t.signOut}
+          </button>
+        </form>
+      </li>
+    </ul>
+  </nav>
+</footer>
+
+<style>
+  .site-footer {
+    view-transition-name: site-footer;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-6-5) var(--gutter);
+    background: var(--color-ink);
+    color: var(--color-footer-text);
+  }
+
+  .site-footer__identity {
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+  }
+
+  .site-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+  }
+
+  .site-footer__links a,
+  .site-footer__sign-out {
+    color: var(--color-footer-text);
+  }
+
+  .site-footer__links a:hover,
+  .site-footer__sign-out:hover {
+    color: var(--color-on-ink);
+  }
+
+  .site-footer__sign-out {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-weight: inherit;
+  }
+
+  .site-footer :focus-visible {
+    outline-color: var(--color-on-ink);
+  }
+</style>

@@ -1,0 +1,19 @@
+---
+import { getTranslation, Locales } from '../i18n/t'
+import TextPage from '../layouts/text-page.astro'
+import { Routes } from '../utils/routes'
+
+const t = getTranslation(Locales.FR).notFound
+---
+
+<TextPage pageTitle={t.title} paragraphs={[t.lead]}>
+  <a href={Routes.HOME} class="h-btn h-btn--primary not-found__back">
+    {t.back}
+  </a>
+</TextPage>
+
+<style>
+  .not-found__back {
+    align-self: flex-start;
+  }
+</style>

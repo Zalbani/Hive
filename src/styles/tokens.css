@@ -1,0 +1,210 @@
+/*
+ * Design tokens — single source of truth for the portal's palette, type scale, spacing, radii and
+ * shadows, measured on the mockups in temp/.
+ */
+:root {
+  /* Surfaces + ink */
+  --color-page: #f6f3ee;
+  --color-surface: #fbfaf7;
+  --color-white: #ffffff;
+  --color-rule: #eee9e1;
+  --color-field-border: #e3ddd3;
+  --color-chip: #f1ede6;
+  --color-ink: #2e2b27;
+  --color-ink-soft: #4a453f;
+  --color-ink-muted: #5e5850;
+  --color-ink-hover: #000000;
+  --color-on-ink: #ffffff;
+  --color-footer-text: #d9d3ca;
+  --color-sun: #d98a3a;
+  --color-glass: rgba(255, 255, 255, 0.6);
+  --color-glass-strong: rgba(255, 255, 255, 0.75);
+  --color-glass-border: rgba(46, 43, 39, 0.25);
+  --color-glow: rgba(255, 255, 255, 0.45);
+  --color-track-on-tone: rgba(255, 255, 255, 0.8);
+  --color-danger: #8f2a1c;
+
+  /* Tones — each one: background, text on it, light tint, filter dot, strong accent */
+  --peach-bg: #f7dfd3;
+  --peach-fg: #6e3520;
+  --peach-tint: #fcf3ee;
+  --peach-dot: #edbba5;
+  --peach-accent: #d4876a;
+
+  --rose-bg: #f3dde1;
+  --rose-fg: #6e2a37;
+  --rose-tint: #fbf4f5;
+  --rose-dot: #e3b2bb;
+  --rose-accent: #c98593;
+
+  --sage-bg: #dde8dc;
+  --sage-fg: #2f5136;
+  --sage-tint: #f4f8f3;
+  --sage-dot: #a9c6a8;
+  --sage-accent: #7fa383;
+
+  --lilac-bg: #e7e1f0;
+  --lilac-fg: #4b3d6b;
+  --lilac-tint: #f2eff7;
+  --lilac-dot: #c3b6da;
+  --lilac-accent: #8e7cc3;
+
+  --mustard-bg: #f4eac6;
+  --mustard-fg: #6b5410;
+  --mustard-tint: #fbf6e4;
+  --mustard-dot: #e5d08a;
+  --mustard-accent: #c9a93a;
+
+  --neutral-bg: #ece7df;
+  --neutral-fg: #4a453f;
+  --neutral-tint: #f6f3ee;
+  --neutral-dot: #a39b90;
+  --neutral-accent: #a39b90;
+
+  /* Hero gradients */
+  --gradient-home: linear-gradient(120deg, #f3dde1 0%, #efe2ee 55%, #e7e1f0 100%);
+  --gradient-works: linear-gradient(120deg, #dde8dc 0%, #e7e1f0 100%);
+  --gradient-action: linear-gradient(120deg, #f3dde1 0%, #f7dfd3 100%);
+  --gradient-summary: linear-gradient(120deg, #e7e1f0 0%, #f3dde1 55%, #f7dfd3 100%);
+  --gradient-documents: linear-gradient(120deg, #e7e1f0 0%, #f2eff7 100%);
+  --gradient-topics: linear-gradient(120deg, #f7dfd3 0%, #fbede6 100%);
+  --gradient-faq: linear-gradient(120deg, #f3dde1 0%, #faeef0 100%);
+  --gradient-contacts: linear-gradient(120deg, #dde8dc 0%, #eef3ed 100%);
+
+  /* Typography */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --weight-regular: 400;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 14px;
+  --text-base: 15px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-card-title: 19px;
+  --text-2xl: 20px;
+  --text-stat: 32px;
+  --text-display: 64px;
+  --text-hero: clamp(32px, 4.4vw, 50px);
+  --text-page-title: clamp(30px, 3.6vw, 40px);
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.6;
+
+  --tracking-tight: -0.03em;
+  --tracking-snug: -0.01em;
+  --tracking-display: -0.04em;
+  --tracking-label: 0.06em;
+  --tracking-kicker: 0.08em;
+
+  /* Spacing — 4px scale, half steps where the mockups need them */
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-2-5: 10px;
+  --space-3: 12px;
+  --space-3-5: 14px;
+  --space-4: 16px;
+  --space-4-5: 18px;
+  --space-5: 20px;
+  --space-5-5: 22px;
+  --space-6: 24px;
+  --space-6-5: 26px;
+  --space-7: 28px;
+  --space-9: 36px;
+  --space-12: 48px;
+
+  --gutter: clamp(20px, 4vw, 40px);
+  --section-gap: clamp(28px, 4vw, 48px);
+  --page-max-width: 1360px;
+  --hero-padding: clamp(28px, 4vw, 40px) clamp(24px, 4vw, 44px);
+
+  /* Radii */
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 20px;
+  --radius-3xl: 22px;
+  --radius-4xl: 24px;
+  --radius-hero: 28px;
+  --radius-pill: 999px;
+
+  /* Shadows + effects */
+  --shadow-float: 0 20px 40px -24px rgba(60, 50, 40, 0.4);
+  --shadow-card: 0 1px 2px rgba(46, 43, 39, 0.04), 0 10px 24px -16px rgba(60, 50, 40, 0.3);
+  --shadow-bar: 0 -8px 24px -18px rgba(60, 50, 40, 0.35);
+  --shadow-card-hover: 0 2px 4px rgba(46, 43, 39, 0.05), 0 18px 32px -18px rgba(60, 50, 40, 0.45);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 150ms;
+  --duration-base: 220ms;
+  --duration-slow: 320ms;
+  --lift: -3px;
+  --blur-glow: blur(60px);
+  --focus-ring: #2e2b27;
+}
+
+[data-tone='peach'] {
+  --tone-bg: var(--peach-bg);
+  --tone-fg: var(--peach-fg);
+  --tone-tint: var(--peach-tint);
+  --tone-dot: var(--peach-dot);
+  --tone-accent: var(--peach-accent);
+}
+
+[data-tone='rose'] {
+  --tone-bg: var(--rose-bg);
+  --tone-fg: var(--rose-fg);
+  --tone-tint: var(--rose-tint);
+  --tone-dot: var(--rose-dot);
+  --tone-accent: var(--rose-accent);
+}
+
+[data-tone='sage'] {
+  --tone-bg: var(--sage-bg);
+  --tone-fg: var(--sage-fg);
+  --tone-tint: var(--sage-tint);
+  --tone-dot: var(--sage-dot);
+  --tone-accent: var(--sage-accent);
+}
+
+[data-tone='lilac'] {
+  --tone-bg: var(--lilac-bg);
+  --tone-fg: var(--lilac-fg);
+  --tone-tint: var(--lilac-tint);
+  --tone-dot: var(--lilac-dot);
+  --tone-accent: var(--lilac-accent);
+}
+
+[data-tone='mustard'] {
+  --tone-bg: var(--mustard-bg);
+  --tone-fg: var(--mustard-fg);
+  --tone-tint: var(--mustard-tint);
+  --tone-dot: var(--mustard-dot);
+  --tone-accent: var(--mustard-accent);
+}
+
+[data-tone='neutral'] {
+  --tone-bg: var(--neutral-bg);
+  --tone-fg: var(--neutral-fg);
+  --tone-tint: var(--neutral-tint);
+  --tone-dot: var(--neutral-dot);
+  --tone-accent: var(--neutral-accent);
+}
+
+[data-tone='ink'] {
+  --tone-bg: var(--color-ink);
+  --tone-fg: var(--color-on-ink);
+  --tone-tint: var(--color-surface);
+  --tone-dot: var(--color-ink);
+  --tone-accent: var(--color-ink);
+}

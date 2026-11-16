@@ -1,0 +1,87 @@
+---
+import Highlight from '../components/highlight.astro'
+import HomeContacts from '../components/home-contacts.astro'
+import HomeDocuments from '../components/home-documents.astro'
+import HomePractical from '../components/home-practical.astro'
+import HomeTopics from '../components/home-topics.astro'
+import QuickActions from '../components/quick-actions.astro'
+import { getToday } from '../data/clock'
+import { getContacts } from '../data/contacts'
+import { getDocuments } from '../data/documents'
+import { getPracticalFacts } from '../data/faq'
+import { getHighlight } from '../data/highlight'
+import { getResidence } from '../data/residence'
+import { getTopics } from '../data/topics'
+import { TopicStages } from '../domain/topic'
+import { getTranslation, Locales } from '../i18n/t'
+import SiteLayout from '../layouts/site-layout.astro'
+import { NavSections } from '../utils/routes'
+
+const HOME_TOPIC_COUNT = 4
+const HOME_DOCUMENT_COUNT = 4
+
+const translation = getTranslation(Locales.FR)
+const today = getToday()
+const [residence, highlight, topics, facts, contacts, documents] = await Promise.all([
+  getResidence(),
+  getHighlight(today),
+  getTopics(),
+  getPracticalFacts(),
+  getContacts(),
+  getDocuments(),
+])
+const activeTopics = topics.filter((topic) => topic.stage !== TopicStages.DONE)
+---
+
+<SiteLayout
+  pageTitle={translation.home.metaTitle}
+  residence={residence}
+  currentSection={NavSections.HOME}
+>
+  <div class="home">
+    <Highlight
+      highlight={highlight}
+      residence={residence}
+      today={today}
+      translation={translation}
+    />
+    <QuickActions residence={residence} translation={translation} />
+    <div class="home__spaced">
+      <HomeTopics
+        topics={activeTopics.slice(0, HOME_TOPIC_COUNT)}
+        totalCount={activeTopics.length}
+        translation={translation}
+      />
+    </div>
+    <div class="home__spaced home__columns">
+      <HomePractical facts={facts} translation={translation} />
+      <HomeContacts contacts={contacts} translation={translation} />
+    </div>
+    <div class="home__spaced">
+      <HomeDocuments
+        documents={documents.slice(0, HOME_DOCUMENT_COUNT)}
+        totalCount={documents.length}
+        translation={translation}
+      />
+    </div>
+  </div>
+</SiteLayout>
+
+<style>
+  .home {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4-5);
+  }
+
+  .home__spaced {
+    margin-top: var(--section-gap);
+  }
+
+  .home__columns {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--section-gap) var(--space-6);
+  }
+</style>

@@ -1,0 +1,74 @@
+---
+import type { Emergency } from '../domain/contact'
+import { toPhoneHref } from '../utils/text'
+
+interface Props {
+  title: string
+  emergencies: Emergency[]
+}
+
+const { title, emergencies } = Astro.props
+---
+
+<section class="h-panel emergency-panel" aria-labelledby="emergencies-title">
+  <h2 id="emergencies-title" class="h-panel__title emergency-panel__title">
+    {title}
+  </h2>
+  <ul class="emergency-panel__list">
+    {emergencies.map((emergency) => (
+      <li>
+        <span class="emergency-panel__label">{emergency.label}</span>
+        <span class="emergency-panel__detail">
+          {emergency.contactName}
+          {emergency.phone !== null && (
+            <>
+              {' · '}
+              <a href={toPhoneHref(emergency.phone)} class="emergency-panel__phone">
+                {emergency.phone}
+              </a>
+            </>
+          )}
+        </span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .emergency-panel {
+    background: var(--rose-bg);
+  }
+
+  .emergency-panel__title {
+    margin-bottom: var(--space-3);
+  }
+
+  .emergency-panel__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--text-sm);
+  }
+
+  .emergency-panel__label {
+    display: block;
+    font-weight: var(--weight-bold);
+  }
+
+  .emergency-panel__detail {
+    color: var(--color-ink-soft);
+  }
+
+  .emergency-panel__phone {
+    color: var(--color-ink-soft);
+    font-weight: var(--weight-semibold);
+    white-space: nowrap;
+  }
+
+  .emergency-panel__phone:hover {
+    color: var(--color-ink);
+  }
+</style>

@@ -1,0 +1,116 @@
+---
+import { getTranslation, Locales } from '../i18n/t'
+import { Routes, type NavSection } from '../utils/routes'
+
+interface Props {
+  background: NavSection
+  title: string
+  lead: string | null
+}
+
+const { background, title, lead } = Astro.props
+const translation = getTranslation(Locales.FR)
+const hasAside = Astro.slots.has('default')
+---
+
+<section class:list={['page-hero', `page-hero--${background}`]}>
+  <div class="h-glow page-hero__glow" aria-hidden="true"></div>
+  <div class="page-hero__text">
+    <nav aria-label={translation.breadcrumb.label}>
+      <ol class="page-hero__breadcrumb">
+        <li>
+          <a href={Routes.HOME}>{translation.nav.home}</a>
+        </li>
+        <li aria-current="page">{title}</li>
+      </ol>
+    </nav>
+    <h1 class="h-page-title">{title}</h1>
+    {lead !== null && <p class="page-hero__lead">{lead}</p>}
+  </div>
+  {hasAside && (
+    <div class="page-hero__aside">
+      <slot />
+    </div>
+  )}
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-7);
+    padding: var(--hero-padding);
+    border-radius: var(--radius-hero);
+  }
+
+  .page-hero--documents {
+    background: var(--gradient-documents);
+  }
+
+  .page-hero--topics {
+    align-items: center;
+    background: var(--gradient-topics);
+  }
+
+  .page-hero--faq {
+    background: var(--gradient-faq);
+  }
+
+  .page-hero--contacts {
+    background: var(--gradient-contacts);
+  }
+
+  .page-hero__glow {
+    width: 280px;
+    height: 280px;
+    right: 220px;
+    top: -160px;
+  }
+
+  .page-hero__text {
+    position: relative;
+    flex: 1 1 380px;
+    max-width: 600px;
+  }
+
+  .page-hero__aside {
+    position: relative;
+    max-width: 100%;
+  }
+
+  .page-hero__breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1-5);
+    margin: 0 0 var(--space-2);
+    padding: 0;
+    list-style: none;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-ink-soft);
+  }
+
+  .page-hero__breadcrumb a {
+    color: var(--color-ink-soft);
+  }
+
+  .page-hero__breadcrumb a:hover {
+    color: var(--color-ink);
+  }
+
+  .page-hero__breadcrumb li + li::before {
+    content: '/';
+    margin-right: var(--space-1-5);
+  }
+
+  .page-hero__lead {
+    margin-top: var(--space-3);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-ink-soft);
+  }
+</style>

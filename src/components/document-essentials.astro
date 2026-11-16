@@ -1,0 +1,61 @@
+---
+import type { ResidenceDocument } from '../domain/document'
+import { DOCUMENT_CATEGORY_TONES } from '../domain/presentation'
+import { format, type Translation } from '../i18n/t'
+import { getDocumentHref } from '../data/documents'
+import { formatDocumentDate } from '../utils/dates'
+import { formatFileSize } from '../utils/file-size'
+import { getDocumentOpenLabel } from '../utils/document-labels'
+import ToneCard from './tone-card.astro'
+
+interface Props {
+  documents: ResidenceDocument[]
+  translation: Translation
+}
+
+const { documents, translation } = Astro.props
+const t = translation.documents
+---
+
+<section class="essentials" aria-labelledby="essentials-title">
+  <h2 id="essentials-title" class="h-subheading h-subheading--small">
+    {t.essentialsTitle}
+  </h2>
+  <ul class="h-card-grid">
+    {documents.map((document) => (
+      <li>
+        <ToneCard
+          href={getDocumentHref(document.id)}
+          tone={DOCUMENT_CATEGORY_TONES[document.category]}
+          badge={t.essentialBadges[document.category]}
+          title={document.title}
+          opensInNewTab={true}
+          ariaLabel={getDocumentOpenLabel(document, translation)}
+        >
+          <span class="essentials__meta">
+            {format(t.meta, {
+              date: formatDocumentDate(document.publishedOn, document.datePrecision),
+              size: formatFileSize(document.sizeBytes),
+            })}{' '}
+            · {t.open}
+          </span>
+        </ToneCard>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .essentials {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3-5);
+  }
+
+  .essentials__meta {
+    margin-top: auto;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-ink-soft);
+  }
+</style>

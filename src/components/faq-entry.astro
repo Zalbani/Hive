@@ -1,0 +1,230 @@
+---
+import type { FaqEntry } from '../domain/faq'
+import type { Translation } from '../i18n/t'
+import { getDocumentHref } from '../data/documents'
+
+interface Props {
+  entry: FaqEntry
+  translation: Translation
+}
+
+const { entry, translation } = Astro.props
+const [firstParagraph, ...otherParagraphs] = entry.answer
+---
+
+<details class="faq-entry" open={entry.openByDefault}>
+  <summary class="faq-entry__question">
+    {entry.question}
+    <span class="faq-entry__icon" aria-hidden="true"></span>
+  </summary>
+  <div class="faq-entry__answer">
+    <p>{firstParagraph}</p>
+    {entry.swatches.length > 0 && (
+      <ul class="faq-entry__swatches">
+        {entry.swatches.map((swatch) => (
+          <li class="faq-entry__swatch">
+            <span class="faq-entry__color" style={`--swatch:${swatch.color}`} aria-hidden="true" />
+            <span>
+              <span class="faq-entry__swatch-label">{swatch.label}</span>
+              <span class="faq-entry__swatch-ref">{swatch.reference}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    )}
+    {entry.facts.length > 0 && (
+      <ul class="faq-entry__facts">
+        {entry.facts.map((fact) => (
+          <li>{fact}</li>
+        ))}
+      </ul>
+    )}
+    {otherParagraphs.map((paragraph) => (
+      <p>{paragraph}</p>
+    ))}
+    {entry.documentId !== null && (
+      <a
+        href={getDocumentHref(entry.documentId)}
+        target="_blank"
+        rel="noopener"
+        class="h-text-link faq-entry__document"
+      >
+        {translation.faq.documentLink}
+        <span class="visually-hidden">{translation.external.newTab}</span>
+      </a>
+    )}
+  </div>
+</details>
+
+<style>
+  .faq-entry {
+    border-radius: var(--radius-xl);
+    background: var(--color-surface);
+    transition: box-shadow var(--duration-base) var(--ease-out);
+  }
+
+  .faq-entry:hover,
+  .faq-entry[open] {
+    box-shadow: var(--shadow-card);
+  }
+
+  .faq-entry__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4-5) var(--space-5-5);
+    list-style: none;
+    cursor: pointer;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+  }
+
+  /* Opening animation: the content box animates from 0 to its auto height (Chromium); other
+     browsers open instantly and still get the fade-in of the answer below. */
+  .faq-entry::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size var(--duration-slow) var(--ease-out),
+      content-visibility var(--duration-slow) allow-discrete;
+  }
+
+  .faq-entry[open]::details-content {
+    block-size: auto;
+  }
+
+  .faq-entry__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-entry__question:focus-visible {
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* The plus is drawn with two bars so it stays optically centred, and turns into a cross. */
+  .faq-entry__icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--tone-bg);
+    color: var(--tone-fg);
+    transition:
+      transform var(--duration-slow) var(--ease-out),
+      background-color var(--duration-base) var(--ease-out),
+      color var(--duration-base) var(--ease-out);
+  }
+
+  .faq-entry__icon::before,
+  .faq-entry__icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 2px;
+    margin: -1px 0 0 -6px;
+    border-radius: var(--radius-pill);
+    background: currentColor;
+  }
+
+  .faq-entry__icon::after {
+    transform: rotate(90deg);
+  }
+
+  .faq-entry__question:hover .faq-entry__icon {
+    background: var(--tone-accent);
+    color: var(--color-on-ink);
+  }
+
+  .faq-entry[open] .faq-entry__icon {
+    transform: rotate(135deg);
+  }
+
+  .faq-entry[open] .faq-entry__answer {
+    animation: faq-answer-in var(--duration-slow) var(--ease-out);
+  }
+
+  @keyframes faq-answer-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+
+  .faq-entry__answer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: 0 var(--space-5-5) var(--space-4-5);
+    font-size: var(--text-md);
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+  }
+
+  .faq-entry__swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-2-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .faq-entry__swatch {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2-5);
+    padding: var(--space-2-5);
+    border-radius: var(--radius-md);
+    background: var(--color-page);
+    line-height: 1.3;
+  }
+
+  .faq-entry__color {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    border: 1px solid var(--color-field-border);
+    background: var(--swatch);
+  }
+
+  .faq-entry__swatch-label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    color: var(--color-ink);
+  }
+
+  .faq-entry__swatch-ref {
+    font-size: var(--text-xs);
+  }
+
+  .faq-entry__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .faq-entry__facts li {
+    padding: 7px var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--tone-bg);
+    color: var(--tone-fg);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+  }
+
+  .faq-entry__document {
+    align-self: flex-start;
+    font-size: var(--text-sm);
+    color: var(--color-ink);
+  }
+</style>

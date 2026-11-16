@@ -1,0 +1,103 @@
+---
+import type { Consultation } from '../domain/consultation'
+import type { Residence } from '../domain/residence'
+import { Tones } from '../domain/tone'
+import { format, type Translation } from '../i18n/t'
+import { formatDayMonth } from '../utils/dates'
+import ExternalLinkHint from './external-link-hint.astro'
+import HighlightFrame from './highlight-frame.astro'
+
+interface Props {
+  consultation: Consultation
+  residence: Residence
+  translation: Translation
+}
+
+const { consultation, residence, translation } = Astro.props
+const t = translation.highlight.action
+const PERCENT = 100
+const responseRate = Math.round((consultation.respondedLots / residence.totalLots) * PERCENT)
+const closingDate = formatDayMonth(consultation.closesOn)
+---
+
+<HighlightFrame
+  background="action"
+  kicker={t.kicker}
+  kickerTone={Tones.ROSE}
+  title={consultation.title}
+  lead={`${consultation.description} ${format(t.deadline, { date: closingDate })}`}
+>
+  <Fragment slot="actions">
+    <a
+      href={consultation.answerUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="h-btn h-btn--large h-btn--primary"
+    >
+      {t.answer} <ExternalLinkHint />
+    </a>
+    <a
+      href={consultation.proposalsUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="h-btn h-btn--large h-btn--glass"
+    >
+      {t.proposals} <ExternalLinkHint />
+    </a>
+  </Fragment>
+  <div slot="aside" class="h-float-card action__card" data-tone={Tones.ROSE}>
+    <p class="h-float-card__label">{t.alreadyLabel}</p>
+    <p class="action__count">{consultation.respondedLots}</p>
+    <p class="action__count-label">{format(t.responded, { total: residence.totalLots })}</p>
+    <div class="action__bar" aria-hidden="true">
+      <div class="action__bar-fill" style={`--rate:${String(responseRate)}%`}></div>
+    </div>
+    <p class="action__closing">{format(t.closesOn, { date: closingDate })}</p>
+  </div>
+</HighlightFrame>
+
+<style>
+  .action__card {
+    flex: 0 1 250px;
+    text-align: center;
+  }
+
+  .action__count {
+    margin-top: var(--space-1);
+    font-size: 56px;
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-display);
+    line-height: 1;
+  }
+
+  .action__count-label {
+    margin-top: var(--space-1-5);
+    font-size: var(--text-sm);
+    color: var(--color-ink-soft);
+  }
+
+  .action__bar {
+    height: 8px;
+    margin-top: var(--space-3-5);
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--color-rule);
+  }
+
+  .action__bar-fill {
+    width: var(--rate);
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: var(--tone-accent);
+  }
+
+  .action__closing {
+    margin-top: var(--space-3-5);
+    padding: 7px;
+    border-radius: var(--radius-sm);
+    background: var(--tone-bg);
+    color: var(--tone-fg);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+  }
+</style>

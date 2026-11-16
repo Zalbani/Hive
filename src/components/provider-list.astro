@@ -1,0 +1,73 @@
+---
+import type { Provider } from '../domain/contact'
+import { PROVIDER_CATEGORY_TONES } from '../domain/presentation'
+import { format, type Translation } from '../i18n/t'
+import { toPhoneHref } from '../utils/text'
+
+interface Props {
+  providers: Provider[]
+  translation: Translation
+}
+
+const { providers, translation } = Astro.props
+const t = translation.contacts
+---
+
+<section aria-labelledby="providers-title">
+  <h2 id="providers-title" class="h-subheading">
+    {t.providersTitle}
+  </h2>
+  <ul class="h-list-card providers">
+    {providers.map((provider) => (
+      <li class="providers__row">
+        <span class="providers__category">
+          <span class="h-tag" data-tone={PROVIDER_CATEGORY_TONES[provider.category]}>
+            {t.providerCategories[provider.category]}
+          </span>
+        </span>
+        <span class="providers__name">
+          {format(t.providerLine, { name: provider.name, service: provider.service })}
+        </span>
+        <a href={toPhoneHref(provider.phone)} class="providers__phone">
+          {provider.phone}
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .providers {
+    padding: var(--space-1-5) var(--space-6);
+    border-radius: var(--radius-3xl);
+  }
+
+  .providers__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    padding: var(--space-3-5) 0;
+  }
+
+  .providers__category {
+    width: 150px;
+  }
+
+  .providers__name {
+    flex: 1 1 260px;
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+  }
+
+  .providers__phone {
+    transition: color var(--duration-fast) ease;
+    font-size: var(--text-md);
+    font-weight: var(--weight-bold);
+    white-space: nowrap;
+  }
+
+  .providers__phone:hover {
+    color: var(--color-ink-muted);
+  }
+</style>
