@@ -1,0 +1,9 @@
+dist
+.astro
+node_modules
+.agents
+.claude
+temp
+package-lock.json
+CHANGELOG.md
+private

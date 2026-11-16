@@ -1,0 +1,48 @@
+{
+  "name": "hive",
+  "version": "0.0.0",
+  "description": "Portail des résidents d'une copropriété (Astro, self-hosted).",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "astro sync && eslint .",
+    "format": "prettier --write .",
+    "typecheck": "astro check",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@astrojs/node": "^11.1.13",
+    "@fontsource/plus-jakarta-sans": "^5.3.0",
+    "astro": "^7.4.12",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@eslint/js": "^10.0.1",
+    "@semantic-release/changelog": "^7.0.0",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^11.0.1",
+    "@semantic-release/github": "^12.0.11",
+    "@semantic-release/npm": "^13.2.0",
+    "@semantic-release/release-notes-generator": "^14.1.1",
+    "@types/node": "^26.6.6",
+    "astro-eslint-parser": "^3.2.0",
+    "conventional-changelog-conventionalcommits": "^9.3.1",
+    "eslint": "^10.15.0",
+    "eslint-plugin-astro": "^3.2.1",
+    "husky": "^9.1.7",
+    "prettier": "^3.10.1",
+    "prettier-plugin-astro": "^1.1.2",
+    "semantic-release": "^25.0.9",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.2"
+  }
+}

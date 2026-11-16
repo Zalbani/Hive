@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    target-branch: main
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    ignore:
+      # TS 7 (native port) ships no JS API: typescript-eslint and astro check still need TS 6.
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
+      # v10 needs conventional-changelog-writer@9, not yet shipped by release-notes-generator.
+      - dependency-name: conventional-changelog-conventionalcommits
+        update-types: ['version-update:semver-major']
+    commit-message:
+      prefix: chore
+      include: scope
+
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: main
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope
