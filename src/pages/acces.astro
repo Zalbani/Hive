@@ -1,0 +1,207 @@
+---
+import { HttpStatus } from '../utils/http'
+import { setTimeout as wait } from 'node:timers/promises'
+import BrandMark from '../components/brand-mark.astro'
+import { isProductionBuild } from '../config/env'
+import { getResidence } from '../data/residence'
+import { format, getTranslation, Locales } from '../i18n/t'
+import BaseLayout from '../layouts/base-layout.astro'
+import { Routes, readNextParameter, toMailtoHref, toSafeNextPath } from '../utils/routes'
+import {
+  SESSION_COOKIE_NAME,
+  SESSION_MAX_AGE_SECONDS,
+  createSessionToken,
+  isAccessCodeValid,
+  isSessionTokenValid,
+} from '../utils/session'
+
+const FAILED_ATTEMPT_DELAY_MS = 1000
+const BRAND_SIZE = 56
+const CODE_FIELD = 'code'
+const NEXT_FIELD = 'next'
+
+type FormState = 'idle' | 'error'
+
+const translation = getTranslation(Locales.FR)
+const t = translation.access
+const residence = await getResidence()
+const nextPath = toSafeNextPath(readNextParameter(Astro.url))
+
+const existingToken = Astro.cookies.get(SESSION_COOKIE_NAME)?.value ?? null
+if (existingToken !== null && isSessionTokenValid(existingToken, Date.now())) {
+  return Astro.redirect(nextPath, HttpStatus.SEE_OTHER)
+}
+
+let formState: FormState = 'idle'
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData()
+  const code = formData.get(CODE_FIELD)
+  const postedNext = formData.get(NEXT_FIELD)
+  const target = toSafeNextPath(typeof postedNext === 'string' ? postedNext : null)
+  if (typeof code === 'string' && isAccessCodeValid(code)) {
+    Astro.cookies.set(SESSION_COOKIE_NAME, createSessionToken(Date.now()), {
+      httpOnly: true,
+      secure: isProductionBuild,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: SESSION_MAX_AGE_SECONDS,
+    })
+    return Astro.redirect(target, HttpStatus.SEE_OTHER)
+  }
+  await wait(FAILED_ATTEMPT_DELAY_MS)
+  formState = 'error'
+  Astro.response.status = HttpStatus.UNAUTHORIZED
+}
+
+const title = `${t.metaTitle} — ${format(translation.meta.titleSuffix, { name: residence.name })}`
+const helpHref = toMailtoHref(
+  residence.councilEmail,
+  format(translation.meta.siteName, { name: residence.name }),
+)
+---
+
+<BaseLayout title={title} description={translation.meta.description}>
+  <main id="main-content" class="access">
+    <div class="access__card">
+      <div class="h-glow access__glow" aria-hidden="true"></div>
+      <div class="access__brand">
+        <BrandMark size={BRAND_SIZE} />
+        <span class="access__name">{residence.name}</span>
+      </div>
+      <h1 class="h-page-title access__title">{t.title}</h1>
+      <p class="access__lead">{t.lead}</p>
+      <form method="post" action={Routes.ACCESS} class="access__form">
+        <input type="hidden" name={NEXT_FIELD} value={nextPath} />
+        <label for="access-code" class="access__label">
+          {t.codeLabel}
+        </label>
+        <div class="access__row">
+          <input
+            id="access-code"
+            name={CODE_FIELD}
+            type="password"
+            class="access__input"
+            autocomplete="current-password"
+            autocapitalize="none"
+            spellcheck="false"
+            required
+            minlength="4"
+            autofocus
+            aria-invalid={formState === 'error' ? 'true' : undefined}
+            aria-describedby={formState === 'error' ? 'access-error' : undefined}
+          />
+          <button type="submit" class="h-btn h-btn--large h-btn--primary">
+            {t.submit}
+          </button>
+        </div>
+        {formState === 'error' && (
+          <p id="access-error" class="access__error" role="alert">
+            {t.error}
+          </p>
+        )}
+      </form>
+      <a href={helpHref} class="h-text-link access__help">
+        {t.help}
+      </a>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .access {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-12) var(--gutter);
+  }
+
+  .access__card {
+    position: relative;
+    overflow: hidden;
+    width: min(560px, 100%);
+    padding: clamp(28px, 5vw, 52px);
+    border-radius: var(--radius-hero);
+    background: var(--gradient-home);
+  }
+
+  .access__glow {
+    width: 280px;
+    height: 280px;
+    right: 40px;
+    top: -170px;
+  }
+
+  .access__brand,
+  .access__title,
+  .access__lead,
+  .access__form,
+  .access__help {
+    position: relative;
+  }
+
+  .access__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .access__name {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-snug);
+  }
+
+  .access__lead {
+    margin: var(--space-3) 0 var(--space-6);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-ink-soft);
+  }
+
+  .access__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+  }
+
+  .access__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2-5);
+  }
+
+  .access__label {
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    color: var(--color-ink-soft);
+  }
+
+  .access__input {
+    flex: 1 1 220px;
+    min-height: 44px;
+    padding: var(--space-2-5) var(--space-4-5);
+    border: 2px solid var(--color-glass-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-size: var(--text-md);
+  }
+
+  .access__error {
+    margin-top: var(--space-2);
+    padding: var(--space-2-5) var(--space-3-5);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-danger);
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+  }
+
+  .access__help {
+    display: inline-block;
+    margin-top: var(--space-5);
+    font-size: var(--text-sm);
+  }
+</style>
